@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+	    
+		<script src="./js/three.min.js"></script>
+		<script src="./js/OrbitControls.js"></script>
+		<script src="./js/OBJLoader.js"></script>
+		<script>
+		var renderer;
+		var object;
+		var material;
+		var camera;
+			var scene = new THREE.Scene();
+			var orbit,clock;
+			scene.background = new THREE.Color( 0xbfd1e5 );
+			
+			//var mouseX = 0, mouseY = 0;
+		//	var container;
+			
+			
+			//function init() {
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight,1, 500 );
+						orbit = new THREE.OrbitControls( camera );
+ 
+
+			
+			
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+			renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
+//Create a PointLight and turn on shadows for the light
+var light = new THREE.PointLight( 0xffffff, 1, 100 );
+light.position.set( 0, 0, 0 );
+light.castShadow = true;            // default false
+scene.add( light );
+
+//Set up shadow properties for the light
+light.shadow.mapSize.width = 512;  // default
+light.shadow.mapSize.height = 512; // default
+light.shadow.camera.near = 0.5;       // default
+light.shadow.camera.far = 500      // default
+
+var planeGeometry = new THREE.PlaneBufferGeometry( 20, 30, 50, 40 );
+planeGeometry.rotateX(270*Math.PI/180);
+var planeMaterial = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
+var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+plane.receiveShadow = true;
+scene.add( plane );
+
+//Create a helper for the shadow camera (optional)
+var helper = new THREE.CameraHelper( light.shadow.camera );
+scene.add( helper );
+			
+			//light
+		 var light = new THREE.AmbientLight(0xffffff,0.5);
+			scene.add(light);
+			
+			var light2 = new THREE.PointLight(0xffffff,0.5);
+			scene.add(light2);
+			
+var loader = new THREE.JSONLoader();
+
+// load a resource
+loader.load(
+	// resource URL
+	'car1.json',
+
+	// onLoad callback
+	function ( geometry, materials ) {
+		 material = new THREE.MeshNormalMaterial();
+		 object = new THREE.Mesh( geometry, material );
+		object.position.set(0,2,0);
+		object.scale.set(3,3,3);
+		object.rotateY(270*Math.PI/180);
+		object.castShadow = true; //default is false
+        object.receiveShadow = false; //default
+		scene.add( object );
+	},
+
+	// onProgress callback
+	function ( xhr ) {
+		console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+	},
+
+	// onError callback
+	function( err ) {
+		console.log( 'An error happened' );
+	}
+);
+
+            //object.position.set(5,5,5);
+			var geometry = new THREE.BoxGeometry( 27, 4 ,40);
+			var geometryS = new THREE.BoxGeometry( 27, 4 ,10);
+			var material1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			var material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+			var material3 = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+			var material4 = new THREE.MeshBasicMaterial({ color: 0x000000 });
+			
+			var cube1 = new THREE.Mesh( geometry, material1 );
+			var cube2 = new THREE.Mesh( geometry, material2 );
+			var cube3 = new THREE.Mesh( geometry, material3 );
+			var cube4 = new THREE.Mesh( geometryS, material4 );
+			
+			scene.add( cube1 );
+			scene.add( cube2 );
+			scene.add( cube3 );
+			scene.add( cube4 );
+			
+		    cube4.position.set(0,0,0);
+			cube1.position.set(0,0,25);
+			cube3.position.set(0,0,65);
+			cube2.position.set(0,0,105);
+			
+			camera.lookAt(cube1.position);
+			
+
+			camera.position.z = 0;
+			camera.position.x = 150;
+			
+			
+   var i=0.2,p=0.2;
+			//}
+			
+			var animate = function () {
+			   
+				
+				requestAnimationFrame( animate );
+				i=i+0.2;
+				var car_pos = object.position.z;
+				if(car_pos<105+20-10)
+				{
+				object.position.z += p ;
+                } 			
+                 				
+                 orbit.update();
+				renderer.render(scene, camera);
+				
+			};
+			//init();
+			animate();
+			
+		</script>
+	</body>
+</html>
